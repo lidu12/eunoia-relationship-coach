@@ -1,16 +1,49 @@
-Eunoia is a comprehensive relationship wellness platform and digital coach designed to foster deeper connection, mindful communication, and emotional growth.
-Visual & Design Philosophy
-The application features a minimalist, responsive user interface designed to feel secure, calm, and highly focused:
-Warm Neutral Palette: Built on a soft, warm neutral background to reduce visual fatigue, paired with elegant charcoal typography and sophisticated sage accents.
-Generous Negative Space: Avoids cluttered multi-column templates in favor of clear, balanced, and focused single-view panels that allow users to reflect without distraction.
-Mathematical Hierarchy: Uses clear, consistent spacing guidelines and refined type scales to prioritize readability, ensuring text legibility across all screen sizes.
-Core Functional Modules
-Interactive Relationship Coaching: An AI-powered conversational space where users can explore interpersonal dynamics, work through conflicts, or practice constructive communication.
-Relationship Health Assessment: A diagnostic questionnaire evaluating core relationship pillars—such as alignment, trust, intimacy, and communication. It provides a detailed, visual feedback report with practical guidance.
-Guided Journaling: A quiet reflective workspace equipped with weekly prompts, mood tracking, and key relational insights to help identify recurrent themes and emotional patterns.
-Mood Tracker & Trends: A daily logger for feelings, trigger analysis, and emotional intensity. It compiles entry history into structured, clear visual trends to track relational well-being over time.
-Relational Goals: A focused tracker to define growth objectives, schedule shared quality-of-life exercises, and monitor action steps together or individually.
-Full-Stack Architecture
-To ensure data security and performance, Eunoia uses a dual-layer full-stack design:
-The Client (React + Vite): Handles the entire visual interface, transition animations, and interactive elements. It runs completely in the user's browser for speed and responsiveness.
-The Server (Express + Node.js): Runs securely in the background. Its primary purpose is to safely communicate with the Gemini API. By handling all AI queries on the server side, your secret API keys remain fully protected and are never exposed to the browser.
+### Eunoia
+
+**Eunoia** is a full-stack relationship wellness platform and AI-powered digital coach designed to help users build healthier relationships through mindful communication, emotional awareness, and personal growth.
+
+## Features
+
+* **AI Relationship Coach** – Chat with an AI coach to navigate conflicts, improve communication, and gain relationship insights.
+* **Relationship Health Assessment** – Complete a guided assessment covering trust, communication, intimacy, and compatibility, with a detailed visual report.
+* **Guided Journaling** – Record thoughts, emotions, and weekly reflections with prompts that encourage self-awareness.
+* **Mood Tracker** – Log daily moods, identify emotional triggers, and visualize trends over time.
+* **Relationship Goals** – Set personal or shared relationship goals, track progress, and build positive habits.
+
+## Design
+
+Eunoia follows a calm, minimalist design focused on clarity and comfort.
+
+* Warm neutral color palette with sage accents
+* Clean typography and generous spacing
+* Fully responsive across desktop, tablet, and mobile
+* Simple, distraction-free interface designed for reflection
+
+## Tech Stack
+
+### Frontend
+
+* React
+* Vite
+* JavaScript
+* CSS
+
+### Backend
+
+* Node.js
+* Express.js
+
+### AI
+
+* Google Gemini API (secure server-side integration)
+
+## Architecture
+
+Eunoia uses a secure full-stack architecture.
+
+* **Frontend (React + Vite):** Delivers a fast, responsive user experience with modern UI components and smooth interactions.
+* **Backend (Node.js + Express):** Processes AI requests, manages application logic, and securely communicates with the Gemini API so API keys remain protected.
+
+## Goal
+
+Eunoia aims to make relationship growth more accessible by combining AI guidance, emotional tracking, structured reflection, and practical tools in a single modern application.
