@@ -1,15 +1,22 @@
 import express from "express";
 import path from "path";
 import dotenv from "dotenv";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.json());
+
+// Normalize URLs when accessed directly via serverless rewrites
+app.use((req, res, next) => {
+  if (req.url && !req.url.startsWith("/api") && !req.url.startsWith("/assets")) {
+    req.url = `/api${req.url}`;
+  }
+  next();
+});
 
 // Lazy-loaded Gemini AI client with dynamic key reload
 let aiInstance: GoogleGenAI | null = null;
@@ -304,7 +311,13 @@ Focus on healthy connection, building emotional intimacy, and self-awareness. Re
 
 // Configure Vite or Static File Serving
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  const isProduction = 
+    process.env.NODE_ENV === "production" || 
+    (typeof __filename !== "undefined" && __filename.includes("dist")) || 
+    Boolean(process.argv[1] && process.argv[1].includes("dist"));
+
+  if (!isProduction) {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -318,9 +331,16 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Eunoia Full-Stack Server running on port ${PORT}`);
-  });
+  // When deployed to serverless environments like Vercel, don't bind port
+  if (!process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Eunoia Full-Stack Server running on port ${PORT}`);
+    });
+  }
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export default app;
