@@ -256,9 +256,14 @@ What is on your heart today? Whether it is minor friction with a loved one, a re
         err.message.includes("Authentication")
       );
 
-      const errorMessageContent = isConfigIssue
-        ? `⚠️ **Gemini Configuration Notice**: ${err.message}`
-        : "I apologize, but I had a momentary lapse in my connection. Please check that your **GEMINI_API_KEY** (from Google AI Studio) is configured in your Vercel project's **Environment Variables**.";
+      let errorMessageContent = "I apologize, but I had a momentary lapse in my connection. Please check that your **GEMINI_API_KEY** (from Google AI Studio) is configured in your Vercel project's **Environment Variables**.";
+      if (err.message) {
+        if (err.message.includes("high demand") || err.message.includes("503") || err.message.includes("UNAVAILABLE")) {
+          errorMessageContent = "Eunoia is currently experiencing high reflection demand. Please wait a few seconds and send your message again.";
+        } else if (isConfigIssue) {
+          errorMessageContent = `⚠️ **Gemini Configuration Notice**: ${err.message}`;
+        }
+      }
 
       const errorMsg: ChatMessage = {
         id: `msg_error_${Date.now()}`,

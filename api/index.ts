@@ -55,27 +55,29 @@ function getGemini(): GoogleGenAI {
 }
 
 async function generateContentWithFallback(ai: GoogleGenAI, options: any) {
-  const primaryModel = options.model || "gemini-3.5-flash";
-  const fallbackModel = "gemini-3.1-flash-lite";
+  const models = [
+    options.model || "gemini-3.5-flash-lite",
+    "gemini-3.8-flash",
+    "gemini-flash-latest"
+  ];
 
-  try {
-    return await ai.models.generateContent(options);
-  } catch (error: any) {
-    const errMsg = error.message || (typeof error === 'object' ? JSON.stringify(error) : String(error));
-    const isAuthError = errMsg.includes("UNAUTHENTICATED") || errMsg.includes("401") || errMsg.includes("invalid authentication credentials");
-    
-    if (!isAuthError && primaryModel !== fallbackModel) {
-      console.warn(`Primary model ${primaryModel} failed. Error: ${errMsg}. Retrying with fallback model ${fallbackModel}...`);
-      const fallbackOptions = { ...options, model: fallbackModel };
-      try {
-        return await ai.models.generateContent(fallbackOptions);
-      } catch (fallbackError) {
-        console.error(`Fallback model ${fallbackModel} also failed:`, fallbackError);
-        throw error;
+  let lastError: any = null;
+
+  for (const model of models) {
+    try {
+      return await ai.models.generateContent({ ...options, model });
+    } catch (err: any) {
+      lastError = err;
+      const errMsg = err.message || (typeof err === "object" ? JSON.stringify(err) : String(err));
+      const isAuthError = errMsg.includes("UNAUTHENTICATED") || errMsg.includes("401") || errMsg.includes("invalid authentication credentials") || errMsg.includes("API_KEY_INVALID");
+      if (isAuthError) {
+        throw err;
       }
+      console.warn(`Model ${model} failed (${errMsg}). Trying next model in fallback pool...`);
     }
-    throw error;
   }
+
+  throw lastError;
 }
 
 const apiRouter = express.Router();
@@ -149,7 +151,7 @@ Guiding principles:
     }));
 
     const response = await generateContentWithFallback(ai, {
-      model: "gemini-3.5-flash",
+      model: "gemini-3.5-flash-lite",
       contents,
       config: {
         systemInstruction,
@@ -185,7 +187,7 @@ Extract deep relationship insights, emotional dynamics, and constructive communi
 You MUST respond with a valid JSON object matching the requested schema.`;
 
     const response = await generateContentWithFallback(ai, {
-      model: "gemini-3.5-flash",
+      model: "gemini-3.5-flash-lite",
       contents: prompt,
       config: {
         systemInstruction: "You are a professional relationship psychologist consultant. Analyze the journal text to produce structured relationship insights. Avoid diagnoses.",
@@ -244,7 +246,7 @@ apiRouter.post("/daily/reflection", async (req, res) => {
 Focus on healthy connection, building emotional intimacy, and self-awareness. Return a beautiful, comforting set of daily exercises.`;
 
     const response = await generateContentWithFallback(ai, {
-      model: "gemini-3.5-flash",
+      model: "gemini-3.5-flash-lite",
       contents: prompt,
       config: {
         systemInstruction: "You are a warm wellness curator. Create rich, encouraging relationship challenges, journal prompts, self-care, and exercises formatted as JSON. Do not make clinical claims.",
