@@ -228,7 +228,8 @@ What is on your heart today? Whether it is minor friction with a loved one, a re
       });
 
       if (!response.ok) {
-        throw new Error("Failed to secure Eunoia service");
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || "Failed to secure Eunoia service");
       }
 
       const data = await response.json();
@@ -246,12 +247,23 @@ What is on your heart today? Whether it is minor friction with a loved one, a re
       };
 
       onSaveSessions(savedWithUser.map(s => s.id === finalSession.id ? finalSession : s));
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      const isConfigIssue = err.message && (
+        err.message.includes("GEMINI_API_KEY") ||
+        err.message.includes("AIzaSy") ||
+        err.message.includes("API Key") ||
+        err.message.includes("Authentication")
+      );
+
+      const errorMessageContent = isConfigIssue
+        ? `⚠️ **Gemini Configuration Notice**: ${err.message}`
+        : "I apologize, but I had a momentary lapse in my connection. Please check that your **GEMINI_API_KEY** (from Google AI Studio) is configured in your Vercel project's **Environment Variables**.";
+
       const errorMsg: ChatMessage = {
         id: `msg_error_${Date.now()}`,
         role: "assistant",
-        content: "I apologize, but I had a momentary lapse in my connection. Let me gather my thoughts. Please verify your GEMINI_API_KEY inside the Secrets tab or retry in a moment.",
+        content: errorMessageContent,
         timestamp: new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
       };
       const finalSession = {
