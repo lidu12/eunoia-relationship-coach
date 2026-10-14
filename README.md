@@ -1,6 +1,35 @@
 # Eunoia - AI Relationship Coach
 
-An evidence-informed, compassionate AI relationship and attachment coach built with React, Vite, Express, and Google Gemini 2.5/Flash AI.
+**Eunoia** is a full-stack relationship wellness platform and AI-powered digital coach designed to help users build healthier relationships through mindful communication, emotional awareness, and personal growth.
+
+---
+
+## ✨ Features
+
+* **AI Relationship Coach** – Chat with an evidence-informed AI coach to navigate conflicts, improve communication, and gain relationship insights.
+* **Relationship Health Assessment** – Complete a guided assessment covering trust, communication, intimacy, and compatibility, with a detailed visual report.
+* **Guided Journaling** – Record thoughts, emotions, and weekly reflections with prompts that encourage self-awareness.
+* **Mood Tracker** – Log daily moods, identify emotional triggers, and visualize trends over time.
+* **Relationship Goals** – Set personal or shared relationship goals, track progress, and build positive habits.
+
+---
+
+## 🎨 Design
+
+Eunoia follows a calm, minimalist design focused on clarity and emotional safety.
+
+* Warm neutral color palette with sage accents
+* Clean typography and generous spacing
+* Fully responsive across desktop, tablet, and mobile
+* Simple, distraction-free interface designed for self-reflection
+
+---
+
+## 💻 Tech Stack
+
+- **Frontend**: React 19, Vite, Tailwind CSS, Lucide Icons, Recharts, Motion
+- **Backend**: Node.js, Express
+- **AI**: Google Gemini API via `@google/genai` (secure server-side integration)
 
 ---
 
@@ -11,22 +40,22 @@ This project can be deployed seamlessly to **Vercel**, **Render**, **Railway**, 
 ### Prerequisites
 Before deploying, make sure you have:
 1. A **Google Gemini API Key** from [Google AI Studio](https://aistudio.google.com/).
-2. Your code pushed to a GitHub repository (e.g., `lidu12/eunoia-relationship-coach`).
+2. Your code pushed to your GitHub repository (`eunoia-relationship-coach`).
 
 ---
 
 ### Option 1: Deploy on Vercel (Recommended)
 
-This project is configured with a unified Vercel setup:
-- **Frontend**: Built with Vite and served statically via Vercel's global CDN.
-- **Backend**: Express API routes run as serverless functions under `/api` via [`api/index.ts`](file:///c:/Users/Hp/Downloads/eunoia%20relationship%20coach/api/index.ts).
+This project includes unified Vercel configuration:
+- **Frontend**: Built with Vite and served statically across Vercel's global CDN.
+- **Backend**: Express API routes execute as serverless functions under `/api` via [`api/index.ts`](file:///c:/Users/Hp/Downloads/eunoia%20relationship%20coach/api/index.ts).
 
 #### Step-by-Step Vercel Deployment:
 1. **Push your changes to GitHub**:
    ```bash
    git add .
    git commit -m "Configure Vercel serverless deployment"
-   git push
+   git push origin main
    ```
 2. Go to **[vercel.com/new](https://vercel.com/new)** and log in with your GitHub account.
 3. Import your repository: **`eunoia-relationship-coach`**.
@@ -39,8 +68,6 @@ This project is configured with a unified Vercel setup:
    - **Name**: `GEMINI_API_KEY`
    - **Value**: *(your Google Gemini API key)*
 6. Click **Deploy**.
-
-> Once finished, Vercel gives you an instant `https://*.vercel.app` domain with automatic HTTPS, edge CDN, and serverless AI endpoints!
 
 ---
 
