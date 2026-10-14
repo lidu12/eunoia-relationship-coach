@@ -90,7 +90,7 @@ export default function App() {
     localStorage.setItem("eunoia_goals", JSON.stringify(updated));
   };
 
-  // REST API simulated JWT handling
+  // REST API simulated JWT handling with offline fallback
   const handleAuthSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!authEmail || !authPassword) {
@@ -106,24 +106,51 @@ export default function App() {
         ? { email: authEmail, password: authPassword }
         : { email: authEmail, password: authPassword, name: authName };
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+      let authenticatedUser: User;
 
-      if (!response.ok) {
-        throw new Error("Authentication credentials refused.");
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          authenticatedUser = {
+            email: authEmail,
+            name: authMode === "login" ? (data.user?.name || authEmail.split("@")[0]) : authName,
+            attachmentStyle: undefined,
+            relationshipStatus: "Single",
+            primaryGoal: "Improve connection intimacy"
+          };
+        } else {
+          const errData = await response.json().catch(() => null);
+          if (response.status < 500 && errData?.error) {
+            throw new Error(errData.error);
+          }
+          // Server error or cold start fallback: log in locally
+          authenticatedUser = {
+            email: authEmail,
+            name: authMode === "login" ? authEmail.split("@")[0] : authName,
+            attachmentStyle: undefined,
+            relationshipStatus: "Single",
+            primaryGoal: "Improve connection intimacy"
+          };
+        }
+      } catch (networkErr: any) {
+        if (networkErr.message && !networkErr.message.includes("fetch")) {
+          throw networkErr;
+        }
+        // Offline / network failure fallback
+        authenticatedUser = {
+          email: authEmail,
+          name: authMode === "login" ? authEmail.split("@")[0] : authName,
+          attachmentStyle: undefined,
+          relationshipStatus: "Single",
+          primaryGoal: "Improve connection intimacy"
+        };
       }
-
-      const data = await response.json();
-      const authenticatedUser: User = {
-        email: authEmail,
-        name: authMode === "login" ? (data.user.name || authEmail.split("@")[0]) : authName,
-        attachmentStyle: undefined,
-        relationshipStatus: "Single",
-        primaryGoal: "Improve connection intimacy"
-      };
 
       saveUser(authenticatedUser);
       setShowAuthModal(false);
